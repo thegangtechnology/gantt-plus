@@ -2,19 +2,17 @@ import date_utils from './date_utils';
 import { $, createSVG, animateSVG } from './svg_utils';
 
 export default class Bar {
-    constructor(gantt, task, index, isNewRow, prevPeriodsLen) {
-        this.set_defaults(gantt, task, index, isNewRow, prevPeriodsLen);
+    constructor(gantt, task, prevPeriodsLen) {
+        this.set_defaults(gantt, task, prevPeriodsLen);
         this.prepare();
         this.draw();
         this.bind();
     }
 
-    set_defaults(gantt, task, index, isNewRow, prevPeriodsLen) {
+    set_defaults(gantt, task, prevPeriodsLen) {
         this.action_completed = false;
         this.gantt = gantt;
         this.task = task;
-        this.index = index;
-        this.isNewRow = isNewRow;
         this.prevPeriodsLen = prevPeriodsLen;
     }
 

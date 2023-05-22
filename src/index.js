@@ -787,11 +787,10 @@ export default class Gantt {
 
     make_bars() {
         let prevPeriodsLen = 0
-        this.bars = this.tasks.forEach((task, index) => {
+        this.bars = this.tasks.forEach((task) => {
             for(let i = 0; i < task.working_periods.length; i++) {
                 let working_period = task.working_periods[i];
-                const isNewRow = index && i === 0
-                const bar = new Bar(this, working_period, i, isNewRow, prevPeriodsLen);
+                const bar = new Bar(this, working_period, prevPeriodsLen);
                 this.layers.bar.appendChild(bar.group);
                 prevPeriodsLen += 1
             }
