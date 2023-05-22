@@ -2,17 +2,18 @@ import date_utils from './date_utils';
 import { $, createSVG, animateSVG } from './svg_utils';
 
 export default class Bar {
-    constructor(gantt, task) {
-        this.set_defaults(gantt, task);
+    constructor(gantt, task, prevPeriodsLen) {
+        this.set_defaults(gantt, task, prevPeriodsLen);
         this.prepare();
         this.draw();
         this.bind();
     }
 
-    set_defaults(gantt, task) {
+    set_defaults(gantt, task, prevPeriodsLen) {
         this.action_completed = false;
         this.gantt = gantt;
         this.task = task;
+        this.prevPeriodsLen = prevPeriodsLen;
     }
 
     prepare() {
@@ -111,7 +112,7 @@ export default class Bar {
     draw_label() {
         createSVG('text', {
             x: this.x + this.width / 2,
-            y: this.y + this.height / 2,
+            y: (this.y + this.height / 2),
             innerHTML: this.task.project_name,
             class: 'bar-label',
             append_to: this.bar_group,
@@ -322,7 +323,7 @@ export default class Bar {
         return (
             this.gantt.options.header_height +
             this.gantt.options.padding +
-            this.task._index * (this.height + this.gantt.options.padding)
+            (this.prevPeriodsLen * (this.height + this.gantt.options.padding))
         );
     }
 

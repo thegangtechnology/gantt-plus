@@ -130,6 +130,7 @@ export default class Gantt {
             language: 'en',
         };
         this.options = Object.assign({}, default_options, options);
+        this.bar_height = this.options.bar_height
     }
 
     setup_tasks(tasks) {
@@ -224,6 +225,13 @@ export default class Gantt {
         }
         this.tasks = newTasks;
 
+
+        this.working_periods = []
+        this.tasks.forEach((task) => {
+            task.working_periods.forEach((period) => {
+                this.working_periods.push(period)
+            })
+        })
         // this.setup_dependencies();
     }
 
@@ -419,7 +427,7 @@ export default class Gantt {
             this.options.header_height +
             this.options.padding +
             (this.options.bar_height + this.options.padding) *
-                this.tasks.length;
+            this.working_periods.length;
 
         createSVG('rect', {
             x: 0,
@@ -442,7 +450,7 @@ export default class Gantt {
             this.options.header_height +
             this.options.padding +
             (this.options.bar_height + this.options.padding) *
-                this.tasks.length;
+                this.working_periods.length;
 
         createSVG('rect', {
             x: 0,
@@ -462,32 +470,34 @@ export default class Gantt {
     make_grid_rows() {
         const rows_layer = createSVG('g', { append_to: this.layers.grid });
         const lines_layer = createSVG('g', { append_to: this.layers.grid });
-
         const row_width = this.dates.length * this.options.column_width;
-        const row_height = this.options.bar_height + this.options.padding;
-
-        let row_y = this.options.header_height + this.options.padding / 2;
-
-        for (let task of this.tasks) {
+        let prevRowHeight = 0
+        
+        for (let index in this.tasks) {
+            let working_periods_length = 0
+            if (this.tasks[index].working_periods) {
+                working_periods_length = this.tasks[index].working_periods.length
+            }
+            let row_height = (working_periods_length * this.bar_height) + (working_periods_length * this.options.padding);
             createSVG('rect', {
                 x: 0,
-                y: row_y,
+                y: this.options.header_height + prevRowHeight + this.options.padding / 2,
                 width: row_width,
                 height: row_height,
                 class: 'grid-row',
                 append_to: rows_layer,
             });
-
+            
             createSVG('line', {
                 x1: 0,
-                y1: row_y + row_height,
+                y1: this.options.header_height + row_height + prevRowHeight + (this.options.padding / 2),
                 x2: row_width,
-                y2: row_y + row_height,
+                y2: this.options.header_height + row_height + prevRowHeight + (this.options.padding / 2),
                 class: 'row-line',
                 append_to: lines_layer,
             });
 
-            row_y += this.options.bar_height + this.options.padding;
+            prevRowHeight += row_height
         }
     }
 
@@ -500,30 +510,32 @@ export default class Gantt {
         });
 
         const row_width = '170px';
-        const row_height = this.options.bar_height + this.options.padding;
+        let prevRowHeight = 0
 
-        let row_y = this.options.header_height + this.options.padding / 2;
-
-        for (let task of this.tasks) {
+        for (let index in this.tasks) {
+            let working_periods_length = 0
+            if (this.tasks[index].working_periods) {
+                working_periods_length = this.tasks[index].working_periods.length
+            }
+            let row_height = (working_periods_length * this.bar_height) + (working_periods_length * this.options.padding);
             createSVG('rect', {
                 x: 0,
-                y: row_y,
+                y: this.options.header_height + prevRowHeight + this.options.padding / 2,
                 width: row_width,
                 height: row_height,
                 class: 'grid-row',
                 append_to: rows_layer,
             });
-
             createSVG('line', {
                 x1: 0,
-                y1: row_y + row_height,
+                y1: this.options.header_height + row_height + prevRowHeight + (this.options.padding / 2),
                 x2: row_width,
-                y2: row_y + row_height,
+                y2: this.options.header_height + row_height + prevRowHeight + (this.options.padding / 2),
                 class: 'row-line',
                 append_to: lines_layer,
             });
 
-            row_y += this.options.bar_height + this.options.padding;
+            prevRowHeight += row_height
         }
     }
 
@@ -774,26 +786,31 @@ export default class Gantt {
     }
 
     make_bars() {
+        let prevPeriodsLen = 0
         this.bars = this.tasks.forEach((task) => {
             for(let i = 0; i < task.working_periods.length; i++) {
                 let working_period = task.working_periods[i];
-                const bar = new Bar(this, working_period);
+                const bar = new Bar(this, working_period, prevPeriodsLen);
                 this.layers.bar.appendChild(bar.group);
+                prevPeriodsLen += 1
             }
         });
     }
 
     make_description_name() {
-        let y = 80;
+        let y = 80; // where does 80 come frommmm ??????
+        let prevWorkingPeriodsLen = 0
         this.tasks.map((task) => {
             createSVG('text', {
                 x: 10,
-                y: y,
+                y: y + prevWorkingPeriodsLen,
                 innerHTML: task.employee_name,
                 class: 'name-label',
                 append_to: this.description_layers.name,
             });
             y = y + this.options.bar_height + 18;
+            // assume that task.working_periods always have item
+            prevWorkingPeriodsLen += (task.working_periods.length - 1) * (this.options.bar_height + this.options.padding)
         });
     }
 
