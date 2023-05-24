@@ -633,7 +633,7 @@ export default class Gantt {
             const width = this.options.column_width;
             const height =
                 (this.options.bar_height + this.options.padding) *
-                    this.tasks.length +
+                    this.working_periods.length +
                 this.options.header_height +
                 this.options.padding / 2;
 
