@@ -644,6 +644,7 @@ export default class Gantt {
                 height,
                 class: 'today-highlight',
                 append_to: this.layers.grid,
+                id: 'gantt-today-highlight'
             });
         }
     }
