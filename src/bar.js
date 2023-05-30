@@ -113,7 +113,7 @@ export default class Bar {
         createSVG('text', {
             x: this.x + this.width / 2,
             y: (this.y + this.height / 2),
-            innerHTML: this.task.project_name,
+            innerHTML: `${this.task.project_name} (${this.task.days_per_week}d)`,
             class: 'bar-label',
             append_to: this.bar_group,
         });
