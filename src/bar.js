@@ -82,7 +82,7 @@ export default class Bar {
             height: this.height,
             rx: this.corner_radius,
             ry: this.corner_radius,
-            class: 'bar',
+            class: `bar ${this.task.status_display.toLowerCase()}`,
             append_to: this.bar_group,
         });
 
@@ -102,7 +102,7 @@ export default class Bar {
             height: this.height,
             rx: this.corner_radius,
             ry: this.corner_radius,
-            class: 'bar-progress',
+            class: `bar-progress ${this.task.status_display.toLowerCase()}`,
             append_to: this.bar_group,
         });
 
@@ -113,8 +113,8 @@ export default class Bar {
         createSVG('text', {
             x: this.x + this.width / 2,
             y: (this.y + this.height / 2),
-            innerHTML: this.task.project_name,
-            class: 'bar-label',
+            innerHTML: `${this.task.project_name} (${this.task.days_per_week}d)`,
+            class: `bar-label ${this.task.status_display.toLowerCase()}`,
             append_to: this.bar_group,
         });
         // labels get BBox in the next tick
