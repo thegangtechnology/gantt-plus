@@ -82,7 +82,11 @@ export default class Bar {
             height: this.height,
             rx: this.corner_radius,
             ry: this.corner_radius,
-            class: `bar ${this.task.status_display.toLowerCase()}`,
+            class: `bar ${
+                this.task.status_display
+                    ? this.task.status_display.toLowerCase()
+                    : ''
+            }`,
             append_to: this.bar_group,
         });
 
@@ -102,7 +106,11 @@ export default class Bar {
             height: this.height,
             rx: this.corner_radius,
             ry: this.corner_radius,
-            class: `bar-progress ${this.task.status_display.toLowerCase()}`,
+            class: `bar-progress ${
+                this.task.status_display
+                    ? this.task.status_display.toLowerCase()
+                    : ''
+            }`,
             append_to: this.bar_group,
         });
 
@@ -112,9 +120,15 @@ export default class Bar {
     draw_label() {
         createSVG('text', {
             x: this.x + this.width / 2,
-            y: (this.y + this.height / 2),
-            innerHTML: `${this.task.project_name} (${this.task.days_per_week}d)`,
-            class: `bar-label ${this.task.status_display.toLowerCase()}`,
+            y: this.y + this.height / 2,
+            innerHTML: `${this.task.project_name}${
+                this.task.days_per_week ? ` (${this.task.days_per_week}d)` : ''
+            }`,
+            class: `bar-label ${
+                this.task.status_display
+                    ? this.task.status_display.toLowerCase()
+                    : ''
+            }`,
             append_to: this.bar_group,
         });
         // labels get BBox in the next tick
@@ -323,7 +337,7 @@ export default class Bar {
         return (
             this.gantt.options.header_height +
             this.gantt.options.padding +
-            (this.prevPeriodsLen * (this.height + this.gantt.options.padding))
+            this.prevPeriodsLen * (this.height + this.gantt.options.padding)
         );
     }
 
